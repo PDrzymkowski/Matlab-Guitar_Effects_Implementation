@@ -23,7 +23,7 @@ function varargout = audioFX(varargin)
 
 % Edit the above text to modify the response to help audioFX
 
-% Last Modified by GUIDE v2.5 25-Mar-2019 19:31:57
+% Last Modified by GUIDE v2.5 07-May-2019 18:21:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -60,6 +60,14 @@ procFile = processed;
 function procFile_x = getProcessedFile
 global procFile;
 procFile_x = procFile;
+
+function setATProcessedFile(ATProcessed)
+global ATProcFile;
+ATProcFile = ATProcessed;
+
+function ATProcFile_x = getATProcessedFile
+global ATProcFile;
+ATProcFile_x = ATProcFile;
 
 
 function showError(statement)
@@ -114,6 +122,23 @@ assignin('base', 'pitchShifter_ON', 0);
     assignin('base', 'pitchShifter_pitch', -12);
     assignin('base', 'pitchShifter_mode', 'ADD');
     assignin('base', 'pitchShifter_gain', 0.5);
+    
+assignin('base', 'reverbAT_ON', 0);
+    assignin('base', 'reverbAT_diffusion', 0.5);
+    assignin('base', 'reverbAT_decayFactor', 0.5);
+    assignin('base', 'reverbAT_preDelay', 0.5);
+    assignin('base', 'reverbAT_wetDryMix', 0.5);    
+
+handles.echoDelay_AT = audiopluginexample.Echo();    
+handles.chorus_AT = audiopluginexample.Chorus();
+handles.reverb_AT = reverberator();
+handles.flanger_AT = audiopluginexample.Flanger();
+handles.pitchShifter_AT = audiopluginexample.PitchShifter();
+    
+cla(handles.Waveform);
+cla(handles.Spectrum);
+
+guidata(hObject, handles);
 % UIWAIT makes audioFX wait for user response (see UIRESUME)
 % uiwait(handles.window);
 
@@ -141,7 +166,8 @@ if(~isempty(originalFile))
     setFile(originalFile);
  
     axes(handles.Waveform);
-    plot((0:length(originalFile.data)-1)/originalFile.fs,originalFile.data); grid;
+    plot((0:length(originalFile.data(:,1))-1)/originalFile.fs,...
+        originalFile.data(:,1)); grid;
     xlabel('Czas trwania[s]');
     ylabel('Amplituda[dB]');
     
@@ -154,8 +180,6 @@ else
     showError('Nie wybrano ¿adnego pliku!');
 end
    
-
-
 
 % --- Executes on button press in playOriginalButton.
 function playOriginalButton_Callback(hObject, eventdata, handles)
@@ -170,6 +194,95 @@ else
     showError('Nie wybrano ¿adnego pliku!');
 end
 
+
+% --- Executes on button press in WFOriginalButton.
+function WFOriginalButton_Callback(hObject, eventdata, ~)
+% hObject    handle to WFOriginalButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+originalFile = getFile();
+
+if(~isempty(originalFile))
+    figure();
+    plot((0:length(originalFile.data(:,1))-1)/originalFile.fs,...
+        originalFile.data(:,1)); grid;
+    title('Przebieg sygna³u oryginalnego');
+    xlabel('Czas trwania[s]');
+    ylabel('Amplituda[dB]');
+else
+    showError('Nie wybrano ¿adnego pliku!');
+end
+
+
+% --- Executes on button press in SpectrumOriginalButton.
+function SpectrumOriginalButton_Callback(hObject, eventdata, handles)
+% hObject    handle to SpectrumOriginalButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+originalFile = getFile();
+
+if(~isempty(originalFile))
+    figure();
+  spectrogram(originalFile.data(:,1));
+  title('Spektrogram sygna³u oryginalnego');
+  xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
+  ylabel('Próbki n');
+else
+    showError('Nie wybrano ¿adnego pliku!');
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% --- Executes on button press in playProcessedButton.
+function playProcessedButton_Callback(hObject, eventdata, handles)
+% hObject    handle to playProcessedButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+processedFile = getProcessedFile();
+
+if(~isempty(processedFile))
+    sound(processedFile.data, processedFile.fs);
+else
+    showError('Nie przetworzono ¿adnego pliku!');
+end
+
+% --- Executes on button press in WFProcessedButton.
+function WFProcessedButton_Callback(hObject, eventdata, handles)
+% hObject    handle to WFProcessedButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+processedFile = getProcessedFile();
+
+if(~isempty(processedFile))
+    figure();
+    plot((0:length(processedFile.data(:,1))-1)/processedFile.fs,...
+        processedFile.data(:,1)); grid;
+    title('Przebieg sygna³u przetworzonego efektami');
+    xlabel('Czas trwania[s]');
+    ylabel('Amplituda[dB]');
+else
+    showError('Nie przetworzono ¿adnego pliku!');
+end
+
+% --- Executes on button press in spectrumProcessedButton.
+function spectrumProcessedButton_Callback(hObject, eventdata, handles)
+% hObject    handle to spectrumProcessedButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+processedFile = getProcessedFile();
+
+if(~isempty(processedFile))
+    figure();
+    spectrogram(processedFile.data(:,1));
+    title('Spektrogram sygna³u przetworzonego efektami');
+    xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
+    ylabel('Próbki n');
+else
+    showError('Nie przetworzono ¿adnego pliku!');
+end
+
+
 % --- Executes on button press in delayButton.
 function delayButton_Callback(hObject, eventdata, handles)
 % hObject    handle to delayButton (see GCBO)
@@ -180,6 +293,19 @@ originalFile = getFile();
 
 if(~isempty(originalFile))
 delayGUI;
+else
+    showError('Nie wybrano ¿adnego pliku!');
+end
+
+% --- Executes on button press in reverbButton.
+function reverbButton_Callback(hObject, eventdata, handles)
+% hObject    handle to reverbButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+originalFile = getFile();
+
+if(~isempty(originalFile))
+reverbGUI;
 else
     showError('Nie wybrano ¿adnego pliku!');
 end
@@ -198,6 +324,19 @@ else
     showError('Nie wybrano ¿adnego pliku!');
 end
 
+% --- Executes on button press in flangerButton.
+function flangerButton_Callback(hObject, eventdata, handles)
+% hObject    handle to flangerButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+originalFile = getFile();
+
+if(~isempty(originalFile))
+flangerGUI;
+else
+    showError('Nie wybrano ¿adnego pliku!');
+end
+
 
 % --- Executes on button press in tremoloButton.
 function tremoloButton_Callback(hObject, eventdata, handles)
@@ -208,20 +347,6 @@ originalFile = getFile();
 
 if(~isempty(originalFile))
 tremoloGUI;
-else
-    showError('Nie wybrano ¿adnego pliku!');
-end
-
-
-% --- Executes on button press in reverbButton.
-function reverbButton_Callback(hObject, eventdata, handles)
-% hObject    handle to reverbButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-originalFile = getFile();
-
-if(~isempty(originalFile))
-reverbGUI;
 else
     showError('Nie wybrano ¿adnego pliku!');
 end
@@ -255,151 +380,9 @@ else
 end
 
 
-% --- Executes on button press in flangerButton.
-function flangerButton_Callback(hObject, eventdata, handles)
-% hObject    handle to flangerButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-originalFile = getFile();
-
-if(~isempty(originalFile))
-flangerGUI;
-else
-    showError('Nie wybrano ¿adnego pliku!');
-end
-
-
-
-% --- Executes on button press in playATButton.
-function playATButton_Callback(hObject, eventdata, handles)
-% hObject    handle to playATButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-originalFile = getFile();
-
-if(~isempty(originalFile))
-
-else
-    showError('Nie wybrano ¿adnego pliku b¹dŸ nie przetworzono efektami AudioSystem!');
-end
-
-
-% --- Executes on button press in WFATButton.
-function WFATButton_Callback(hObject, eventdata, handles)
-% hObject    handle to WFATButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-originalFile = getFile();
-
-if(~isempty(originalFile))
-
-else
-    showError('Nie wybrano ¿adnego pliku b¹dŸ nie przetworzono efektami AudioSystem!');
-end
-
-
-% --- Executes on button press in spectrumATButton.
-function spectrumATButton_Callback(hObject, eventdata, handles)
-% hObject    handle to spectrumATButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-originalFile = getFile();
-
-if(~isempty(originalFile))
-
-else
-    showError('Nie wybrano ¿adnego pliku b¹dŸ nie przetworzono efektami AudioSystem!');
-end
-
-
-% --- Executes on button press in playProcessedButton.
-function playProcessedButton_Callback(hObject, eventdata, handles)
-% hObject    handle to playProcessedButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-processedFile = getProcessedFile();
-
-if(~isempty(processedFile))
-    sound(processedFile.data, processedFile.fs);
-else
-    showError('Nie przetworzono ¿adnego pliku!');
-end
-
-
-% --- Executes on button press in WFProcessedButton.
-function WFProcessedButton_Callback(hObject, eventdata, handles)
-% hObject    handle to WFProcessedButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-processedFile = getProcessedFile();
-
-if(~isempty(processedFile))
-    figure();
-    plot((0:length(processedFile.data)-1)/processedFile.fs,processedFile.data); grid;
-    title('Przebieg sygna³u przetworzonego efektami');
-    xlabel('Czas trwania[s]');
-    ylabel('Amplituda[dB]');
-else
-    showError('Nie przetworzono ¿adnego pliku!');
-end
-
-
-% --- Executes on button press in spectrumProcessedButton.
-function spectrumProcessedButton_Callback(hObject, eventdata, handles)
-% hObject    handle to spectrumProcessedButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-processedFile = getProcessedFile();
-
-if(~isempty(processedFile))
-    figure();
-    spectrogram(processedFile.data(:,1));
-    title('Spektrogram sygna³u przetworzonego efektami');
-    xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
-    ylabel('Próbki n');
-else
-    showError('Nie przetworzono ¿adnego pliku!');
-end
-
-
-% --- Executes on button press in WFOriginalButton.
-function WFOriginalButton_Callback(hObject, eventdata, ~)
-% hObject    handle to WFOriginalButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-originalFile = getFile();
-
-if(~isempty(originalFile))
-    figure();
-    plot((0:length(originalFile.data)-1)/originalFile.fs,originalFile.data); grid;
-    title('Przebieg sygna³u oryginalnego');
-    xlabel('Czas trwania[s]');
-    ylabel('Amplituda[dB]');
-else
-    showError('Nie wybrano ¿adnego pliku!');
-end
-
-
-% --- Executes on button press in SpectrumOriginalButton.
-function SpectrumOriginalButton_Callback(hObject, eventdata, handles)
-% hObject    handle to SpectrumOriginalButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-originalFile = getFile();
-
-if(~isempty(originalFile))
-    figure();
-  spectrogram(originalFile.data(:,1));
-  title('Spektrogram sygna³u oryginalnego');
-  xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
-  ylabel('Próbki n');
-else
-    showError('Nie wybrano ¿adnego pliku!');
-end
-
 
 % --- Executes on button press in myEffectsApplyButton.
-function myEffectsApplyButton_Callback(hObject, eventdata, handles)
+function myEffectsApplyButton_Callback(~, eventdata, handles)
 % hObject    handle to myEffectsApplyButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -414,6 +397,8 @@ if(~isempty(processedFile))
          processedFile.data = pitchShifter(processedFile.data(:,1),...
              pitchShifter_pitch, pitchShifter_mode, pitchShifter_gain);
          numbOfEffects = numbOfEffects + 1;
+         processedFile.data = processedFile.data';
+         processedFile.data(1:end-1) = processedFile.data(2:end);
      end
      if(evalin('base', 'overdrive_ON')==1)
          overdrive_clipVal = evalin('base', 'overdrive_clipValue');
@@ -475,10 +460,10 @@ if(~isempty(processedFile))
          setProcessedFile(processedFile)
          
          axes(handles.Waveform);
-         plot((0:length(processedFile.data)-1)/processedFile.fs,processedFile.data); grid;
+         plot((0:length(processedFile.data(:,1))-1)/processedFile.fs,...
+         processedFile.data(:,1)); grid;
          xlabel('czas trwania[s]');
          ylabel('Amplituda[dB]');
-    
          axes(handles.Spectrum);
          spectrogram(processedFile.data(:,1));
          xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
@@ -488,19 +473,73 @@ else
     showError('Nie wybrano ¿adnego pliku!');
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% --- Executes on button press in playATButton.
+function playATButton_Callback(hObject, eventdata, handles)
+% hObject    handle to playATButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+ATProcessedFile = getATProcessedFile();
+
+if(~isempty(ATProcessedFile))
+    sound(ATProcessedFile.data, ATProcessedFile.fs);
+else
+    showError('Nie wybrano ¿adnego pliku b¹dŸ nie przetworzono efektami Audio Toolbox!');
+end
+
+
+% --- Executes on button press in WFATButton.
+function WFATButton_Callback(hObject, eventdata, handles)
+% hObject    handle to WFATButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+ATProcessedFile = getATProcessedFile();
+
+if(~isempty(ATProcessedFile))
+    figure();
+    plot((0:length(ATProcessedFile.data(:,1))-1)/ATProcessedFile.fs,...
+        ATProcessedFile.data(:,1));  grid;
+    title('Przebieg sygna³u przetworzonego Audio Toolbox');
+    xlabel('Czas trwania[s]');
+    ylabel('Amplituda[dB]');
+else
+    showError('Nie wybrano ¿adnego pliku b¹dŸ nie przetworzono efektami Audio Toolbox!');
+end
+
+
+% --- Executes on button press in spectrumATButton.
+function spectrumATButton_Callback(hObject, eventdata, handles)
+% hObject    handle to spectrumATButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+ATProcessedFile = getATProcessedFile();
+
+if(~isempty(ATProcessedFile))
+    figure();
+    spectrogram(ATProcessedFile.data(:,1));
+    title('Spektrogram sygna³u przetworzonego Audio Toolbox');
+    xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
+    ylabel('Próbki n');
+else
+    showError('Nie wybrano ¿adnego pliku b¹dŸ nie przetworzono efektami Audio Toolbox!');
+end
+
+
 
 % --- Executes on button press in ATDelayButton.
 function ATDelayButton_Callback(hObject, eventdata, handles)
 % hObject    handle to ATDelayButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+originalFile = getFile();
 
-
-% --- Executes on button press in ATChorusButton.
-function ATChorusButton_Callback(hObject, eventdata, handles)
-% hObject    handle to ATChorusButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+if(~isempty(originalFile))
+    audioTestBench(handles.echoDelay_AT);    
+else
+    showError('Nie wybrano ¿adnego pliku!');
+end
 
 
 % --- Executes on button press in ATReverbButton.
@@ -508,6 +547,28 @@ function ATReverbButton_Callback(hObject, eventdata, handles)
 % hObject    handle to ATReverbButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+originalFile = getFile();
+
+if(~isempty(originalFile))
+
+else
+    showError('Nie wybrano ¿adnego pliku!');
+end
+
+
+
+% --- Executes on button press in ATChorusButton.
+function ATChorusButton_Callback(hObject, eventdata, handles)
+% hObject    handle to ATChorusButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+originalFile = getFile();
+if(~isempty(originalFile))
+    audioTestBench(handles.chorus_AT);
+else
+    showError('Nie wybrano ¿adnego pliku!');
+end
+
 
 
 % --- Executes on button press in ATPitchShifterButton.
@@ -515,17 +576,48 @@ function ATPitchShifterButton_Callback(hObject, eventdata, handles)
 % hObject    handle to ATPitchShifterButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+originalFile = getFile();
 
+if(~isempty(originalFile))
+    audioTestBench(handles.pitchShifter_AT);
+else
+    showError('Nie wybrano ¿adnego pliku!');
+end
 
 % --- Executes on button press in ATFlangerButton.
 function ATFlangerButton_Callback(hObject, eventdata, handles)
 % hObject    handle to ATFlangerButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+originalFile = getFile();
 
+if(~isempty(originalFile))
+    audioTestBench(handles.flanger_AT);
+else
+    showError('Nie wybrano ¿adnego pliku!');
+end
 
 % --- Executes on button press in ATApplyButton.
 function ATApplyButton_Callback(hObject, eventdata, handles)
 % hObject    handle to ATApplyButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+ATProcessedFile = uiimport('-file');
+
+if(~isempty(ATProcessedFile))
+    setATProcessedFile(ATProcessedFile);
+ 
+    axes(handles.Waveform);
+    plot((0:length(ATProcessedFile.data(:,1))-1)/ATProcessedFile.fs,...
+        ATProcessedFile.data(:,1)); 
+    grid;
+    xlabel('Czas trwania[s]');
+    ylabel('Amplituda[dB]');
+    
+    axes(handles.Spectrum);
+    spectrogram(ATProcessedFile.data(:,1));
+    xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
+    ylabel('Próbki n');
+else
+    showError('Nie wybrano ¿adnego pliku!');
+end

@@ -68,7 +68,7 @@ if(evalin('base', 'pitchShifter_mode') == 'ADD')
     set(handles.pitchShifter_gainPanel, 'Visible', 1);
 else
     set(handles.pitchShifter_ADDRadio, 'Value', 0);
-    set(handles.pitchShifter_ADDRadio, 'Value', 1);
+    set(handles.pitchShifter_REPLACERadio, 'Value', 1);
     set(handles.pitchShifter_gainPanel, 'Visible', 0);
 end
 
@@ -164,7 +164,7 @@ function pitchShifter_REPLACERadio_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of pitchShifter_REPLACERadio
-assignin('base', 'pitchShifter_mode', 'REPLACE');
+assignin('base', 'pitchShifter_mode', 'REP');
 set(handles.pitchShifter_gainPanel, 'Visible', 0);
 
 % --- Executes on slider movement.
