@@ -177,7 +177,7 @@ if(~isempty(originalFile))
     xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
     ylabel('Próbki n');
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
    
 
@@ -191,7 +191,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
 sound(originalFile.data, originalFile.fs);
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
 
 
@@ -210,7 +210,7 @@ if(~isempty(originalFile))
     xlabel('Czas trwania[s]');
     ylabel('Amplituda[dB]');
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
 
 
@@ -228,7 +228,7 @@ if(~isempty(originalFile))
   xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
   ylabel('Próbki n');
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -244,7 +244,7 @@ processedFile = getProcessedFile();
 if(~isempty(processedFile))
     sound(processedFile.data, processedFile.fs);
 else
-    showError('Nie przetworzono ¿adnego pliku!');
+    msgbox('Nie przetworzono ¿adnego pliku!', 'B³¹d');
 end
 
 % --- Executes on button press in WFProcessedButton.
@@ -262,7 +262,7 @@ if(~isempty(processedFile))
     xlabel('Czas trwania[s]');
     ylabel('Amplituda[dB]');
 else
-    showError('Nie przetworzono ¿adnego pliku!');
+    msgbox('Nie przetworzono ¿adnego pliku!', 'B³¹d');
 end
 
 % --- Executes on button press in spectrumProcessedButton.
@@ -279,7 +279,7 @@ if(~isempty(processedFile))
     xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
     ylabel('Próbki n');
 else
-    showError('Nie przetworzono ¿adnego pliku!');
+    msgbox('Nie przetworzono ¿adnego pliku!', 'B³¹d');
 end
 
 
@@ -294,7 +294,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
 delayGUI;
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
 
 % --- Executes on button press in reverbButton.
@@ -307,7 +307,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
 reverbGUI;
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
 
 
@@ -321,7 +321,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
 chorusGUI;
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
 
 % --- Executes on button press in flangerButton.
@@ -334,7 +334,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
 flangerGUI;
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
 
 
@@ -348,7 +348,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
 tremoloGUI;
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
 
 
@@ -362,7 +362,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
 overdriveGUI;
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
 
 
@@ -376,7 +376,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
 pitchShifterGUI;
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
 
 
@@ -455,7 +455,7 @@ if(~isempty(processedFile))
      end
      
      if(numbOfEffects == 0)
-         showError('Nie wybrano ¿adnego efektu!');
+         msgbox('Nie wybrano ¿adnego efektu!', 'B³¹d');
      else
          setProcessedFile(processedFile)
          
@@ -470,7 +470,7 @@ if(~isempty(processedFile))
          ylabel('Próbki n');
      end
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -486,7 +486,7 @@ ATProcessedFile = getATProcessedFile();
 if(~isempty(ATProcessedFile))
     sound(ATProcessedFile.data, ATProcessedFile.fs);
 else
-    showError('Nie wybrano ¿adnego pliku b¹dŸ nie przetworzono efektami Audio Toolbox!');
+    msgbox('Nie wybrano ¿adnego pliku b¹dŸ nie przetworzono efektami Audio Toolbox!', 'B³¹d');
 end
 
 
@@ -505,7 +505,7 @@ if(~isempty(ATProcessedFile))
     xlabel('Czas trwania[s]');
     ylabel('Amplituda[dB]');
 else
-    showError('Nie wybrano ¿adnego pliku b¹dŸ nie przetworzono efektami Audio Toolbox!');
+    msgbox('Nie wybrano ¿adnego pliku b¹dŸ nie przetworzono efektami Audio Toolbox!', 'B³¹d');
 end
 
 
@@ -523,7 +523,7 @@ if(~isempty(ATProcessedFile))
     xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
     ylabel('Próbki n');
 else
-    showError('Nie wybrano ¿adnego pliku b¹dŸ nie przetworzono efektami Audio Toolbox!');
+    msgbox('Nie wybrano ¿adnego pliku b¹dŸ nie przetworzono efektami Audio Toolbox!', 'B³¹d');
 end
 
 
@@ -538,7 +538,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
     audioTestBench(handles.echoDelay_AT);    
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
 
 
@@ -550,9 +550,9 @@ function ATReverbButton_Callback(hObject, eventdata, handles)
 originalFile = getFile();
 
 if(~isempty(originalFile))
-
+    ATReverbatorGUI(originalFile);
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
 
 
@@ -566,7 +566,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
     audioTestBench(handles.chorus_AT);
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
 
 
@@ -581,7 +581,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
     audioTestBench(handles.pitchShifter_AT);
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
 
 % --- Executes on button press in ATFlangerButton.
@@ -594,7 +594,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
     audioTestBench(handles.flanger_AT);
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
 
 % --- Executes on button press in ATApplyButton.
@@ -619,5 +619,5 @@ if(~isempty(ATProcessedFile))
     xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
     ylabel('Próbki n');
 else
-    showError('Nie wybrano ¿adnego pliku!');
+    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
 end
