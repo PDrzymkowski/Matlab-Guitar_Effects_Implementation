@@ -26,18 +26,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function output = reverb(input, Fs, room_size, depth, pre_delay1, pre_delay2)
 
-
+% Wartoœci opóŸnieñ filtrów grzebieniowych
 D1 = round(0.001*room_size*Fs);
 D2 = round(0.001*room_size*1.17*Fs);
 D3 = round(0.001*room_size*1.33*Fs);
 D4 = round(0.001*room_size*1.5*Fs);
+% Wartoœci opóŸnieñ filtrów wszechpzepustowych
 D5 = round(0.001*pre_delay1*Fs);
 D6 = round(0.001*pre_delay2*Fs);
 
+% Wartoœci wspó³czynników filtrów grzebieniowych
 a1 = depth;
 a2 = depth;
 a3 = depth;
 a4 = depth;
+% Wartoœci wspó³czynników filtrów wszechprzepustowych
 a5 = 0.7;
 a6 = 0.7;
 
@@ -51,21 +54,23 @@ comb_sect_out = zeros(length(input),1);
 output = zeros(length(input), 1);
 
 for i = max([D1,D2,D3,D4,D5,D6])+1:length(input)
+    
+    % Sygna³y wyjœciowe poszczególnych filtrów grzebieniowych
     comb1_out(i) = input(i) + a1*comb1_out(i-D1);
     comb2_out(i) = input(i) + a2*comb2_out(i-D2);
     comb3_out(i) = input(i) + a3*comb3_out(i-D3);
     comb4_out(i) = input(i) + a4*comb4_out(i-D4);
     
+    % Suma sygna³ów z filtrów grzebieniowych
     comb_sect_out(i) = comb1_out(i) + comb2_out(i) + comb3_out(i) + comb4_out(i);
     
+    % Sygna³ wyjœciowy pierwszego stopnia filtru wszechprzepustowego
     allpass1_out(i) = -a5*comb_sect_out(i)+comb_sect_out(i-D5)+a5*allpass1_out(i-D5);
     
+    % Sygna³ wyjœciowy drugiego stopnia filtru wszechprzepustowego
     output(i) = (-a6*allpass1_out(i)+allpass1_out(i-D6)+a6*output(i-D6));
 end
-
+% Przeskalowanie próbek sygna³u do zakresu <-1; 1>
 output = output/max(abs(output));
 
 end
-
-
-

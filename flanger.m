@@ -21,8 +21,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function output = flanger(input, Fs, delay, rate, gain, version)
 
+% Obliczenie liczby probek opoznienia sygnalu audio
 max_delay = floor(delay*Fs/1000);
 
+% Obliczenie czêstotliwoœci unormowanej sygna³u moduluj¹cego
 frequency_change= rate/Fs;
 
 output = zeros(length(input),1);
@@ -33,11 +35,13 @@ end
 
 if(strcmp(version,'FIR'))
     for i = max_delay:length(input)
+        % Realizacja efektu Flanger w wersji SOI 
         delayTime = 1 + round(max_delay/2*(1-cos(2*pi*frequency_change*i)));
         output(i) = (1/(1+gain)) * (input(i) + gain*input(i-delayTime));
     end
 else
      for i = max_delay:length(input)
+         % Realizacja efektu Flanger w wersji NOI 
          delayTime = 1 + round(max_delay/2*(1-cos(2*pi*frequency_change*i)));
         output(i) = (1/(1+gain)) * (input(i) + gain*output(i-delayTime));
      end

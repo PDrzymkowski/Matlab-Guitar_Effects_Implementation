@@ -23,8 +23,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function output = chorus(input, Fs, delay, rate_1, depth_1, rate_2, depth_2, version)
 
+% Obliczenie liczby probek opoznienia sygnalu audio
 max_delay = floor(delay*Fs/1000);
 
+% Obliczenie czêstotliwoœci unormowanych sygna³ów moduluj¹cych
 frequency_change_1= rate_1/Fs;
 frequency_change_2= rate_2/Fs;
 
@@ -36,12 +38,14 @@ end
 
 if(strcmp(version,'FIR'))
     for i = max_delay:length(input)
+        % Realizacja efektu Chorus w wersji SOI 
         delayTime_1 = 1 + round(max_delay/2*(1-cos(2*pi*frequency_change_1*i)));
         delayTime_2 = 1 + round(max_delay/2*(1-cos(2*pi*frequency_change_2*i)));
         output(i) =1/((1+depth_1+depth_2))* (input(i) + depth_1*input(i-delayTime_1) + depth_2*input(i-delayTime_2));
     end
 else
      for i = max_delay:length(input)
+         % Realizacja efektu Chorus w wersji NOI 
          delayTime_1 = 1 + round(max_delay/2*(1-cos(2*pi*frequency_change_1*i)));
          delayTime_2 = 1 + round(max_delay/2*(1-cos(2*pi*frequency_change_2*i)));
         output(i) = 1/((1+depth_1+depth_2))*(input(i) + depth_1*output(i-delayTime_1) + depth_2*output(i-delayTime_2));

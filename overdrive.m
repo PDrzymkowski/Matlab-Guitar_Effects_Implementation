@@ -16,6 +16,7 @@ function output = overdrive(input, Fs, clipValue)
 
 output = zeros(length(input), 1);
 
+% Realizacja obciêcia sygna³u w zale¿noœci od poziomu amplitudy
 for i = 1:length(input)
     if ((input(i)) <= -(2/3)*clipValue)
         output(i) = -clipValue;

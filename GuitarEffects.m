@@ -1,5 +1,5 @@
 
-function varargout = audioFX(varargin)
+function varargout = GuitarEffects(varargin)
 % AUDIOFX MATLAB code for audioFX.fig
 %      AUDIOFX, by itself, creates a new AUDIOFX or raises the existing
 %      singleton*.
@@ -23,7 +23,7 @@ function varargout = audioFX(varargin)
 
 % Edit the above text to modify the response to help audioFX
 
-% Last Modified by GUIDE v2.5 07-May-2019 18:21:03
+% Last Modified by GUIDE v2.5 06-Jun-2019 11:05:51
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -61,20 +61,11 @@ function procFile_x = getProcessedFile
 global procFile;
 procFile_x = procFile;
 
-function setATProcessedFile(ATProcessed)
-global ATProcFile;
-ATProcFile = ATProcessed;
-
-function ATProcFile_x = getATProcessedFile
-global ATProcFile;
-ATProcFile_x = ATProcFile;
-
 
 function showError(statement)
     error = errordlg(statement,'Error');
     set(error, 'WindowStyle', 'modal');
     uiwait(error);
-
 
 
 % --- Executes just before audioFX is made visible.
@@ -129,11 +120,6 @@ assignin('base', 'reverbAT_ON', 0);
     assignin('base', 'reverbAT_preDelay', 0.5);
     assignin('base', 'reverbAT_wetDryMix', 0.5);    
 
-handles.echoDelay_AT = audiopluginexample.Echo();    
-handles.chorus_AT = audiopluginexample.Chorus();
-handles.reverb_AT = reverberator();
-handles.flanger_AT = audiopluginexample.Flanger();
-handles.pitchShifter_AT = audiopluginexample.PitchShifter();
     
 cla(handles.Waveform);
 cla(handles.Spectrum);
@@ -172,12 +158,11 @@ if(~isempty(originalFile))
     ylabel('Amplituda[dB]');
     
     axes(handles.Spectrum);
-    %plot(abs(fft(originalFile.data))); grid;
     spectrogram(originalFile.data(:,1));
     xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
     ylabel('Próbki n');
 else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
+    showError('Nie wybrano ¿adnego pliku!');
 end
    
 
@@ -191,7 +176,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
 sound(originalFile.data, originalFile.fs);
 else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
+    showError('Nie wybrano ¿adnego pliku!');
 end
 
 
@@ -210,7 +195,7 @@ if(~isempty(originalFile))
     xlabel('Czas trwania[s]');
     ylabel('Amplituda[dB]');
 else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
+    showError('Nie wybrano ¿adnego pliku!');
 end
 
 
@@ -228,7 +213,7 @@ if(~isempty(originalFile))
   xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
   ylabel('Próbki n');
 else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
+    showError('Nie wybrano ¿adnego pliku!');
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -244,7 +229,7 @@ processedFile = getProcessedFile();
 if(~isempty(processedFile))
     sound(processedFile.data, processedFile.fs);
 else
-    msgbox('Nie przetworzono ¿adnego pliku!', 'B³¹d');
+    showError('Nie przetworzono ¿adnego pliku!');
 end
 
 % --- Executes on button press in WFProcessedButton.
@@ -262,7 +247,7 @@ if(~isempty(processedFile))
     xlabel('Czas trwania[s]');
     ylabel('Amplituda[dB]');
 else
-    msgbox('Nie przetworzono ¿adnego pliku!', 'B³¹d');
+    showError('Nie przetworzono ¿adnego pliku!');
 end
 
 % --- Executes on button press in spectrumProcessedButton.
@@ -279,7 +264,7 @@ if(~isempty(processedFile))
     xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
     ylabel('Próbki n');
 else
-    msgbox('Nie przetworzono ¿adnego pliku!', 'B³¹d');
+    showError('Nie przetworzono ¿adnego pliku!');
 end
 
 
@@ -294,7 +279,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
 delayGUI;
 else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
+    showError('Nie wybrano ¿adnego pliku!');
 end
 
 % --- Executes on button press in reverbButton.
@@ -307,7 +292,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
 reverbGUI;
 else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
+    showError('Nie wybrano ¿adnego pliku!');
 end
 
 
@@ -321,7 +306,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
 chorusGUI;
 else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
+    showError('Nie wybrano ¿adnego pliku!');
 end
 
 % --- Executes on button press in flangerButton.
@@ -334,7 +319,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
 flangerGUI;
 else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
+    showError('Nie wybrano ¿adnego pliku!');
 end
 
 
@@ -348,7 +333,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
 tremoloGUI;
 else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
+    showError('Nie wybrano ¿adnego pliku!');
 end
 
 
@@ -362,7 +347,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
 overdriveGUI;
 else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
+    showError('Nie wybrano ¿adnego pliku!');
 end
 
 
@@ -376,7 +361,7 @@ originalFile = getFile();
 if(~isempty(originalFile))
 pitchShifterGUI;
 else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
+    showError('Nie wybrano ¿adnego pliku!');
 end
 
 
@@ -455,7 +440,7 @@ if(~isempty(processedFile))
      end
      
      if(numbOfEffects == 0)
-         msgbox('Nie wybrano ¿adnego efektu!', 'B³¹d');
+         showError('Nie wybrano ¿adnego efektu!');
      else
          setProcessedFile(processedFile)
          
@@ -470,154 +455,5 @@ if(~isempty(processedFile))
          ylabel('Próbki n');
      end
 else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
-end
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-% --- Executes on button press in playATButton.
-function playATButton_Callback(hObject, eventdata, handles)
-% hObject    handle to playATButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-ATProcessedFile = getATProcessedFile();
-
-if(~isempty(ATProcessedFile))
-    sound(ATProcessedFile.data, ATProcessedFile.fs);
-else
-    msgbox('Nie wybrano ¿adnego pliku b¹dŸ nie przetworzono efektami Audio Toolbox!', 'B³¹d');
-end
-
-
-% --- Executes on button press in WFATButton.
-function WFATButton_Callback(hObject, eventdata, handles)
-% hObject    handle to WFATButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-ATProcessedFile = getATProcessedFile();
-
-if(~isempty(ATProcessedFile))
-    figure();
-    plot((0:length(ATProcessedFile.data(:,1))-1)/ATProcessedFile.fs,...
-        ATProcessedFile.data(:,1));  grid;
-    title('Przebieg sygna³u przetworzonego Audio Toolbox');
-    xlabel('Czas trwania[s]');
-    ylabel('Amplituda[dB]');
-else
-    msgbox('Nie wybrano ¿adnego pliku b¹dŸ nie przetworzono efektami Audio Toolbox!', 'B³¹d');
-end
-
-
-% --- Executes on button press in spectrumATButton.
-function spectrumATButton_Callback(hObject, eventdata, handles)
-% hObject    handle to spectrumATButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-ATProcessedFile = getATProcessedFile();
-
-if(~isempty(ATProcessedFile))
-    figure();
-    spectrogram(ATProcessedFile.data(:,1));
-    title('Spektrogram sygna³u przetworzonego Audio Toolbox');
-    xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
-    ylabel('Próbki n');
-else
-    msgbox('Nie wybrano ¿adnego pliku b¹dŸ nie przetworzono efektami Audio Toolbox!', 'B³¹d');
-end
-
-
-
-% --- Executes on button press in ATDelayButton.
-function ATDelayButton_Callback(hObject, eventdata, handles)
-% hObject    handle to ATDelayButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-originalFile = getFile();
-
-if(~isempty(originalFile))
-    audioTestBench(handles.echoDelay_AT);    
-else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
-end
-
-
-% --- Executes on button press in ATReverbButton.
-function ATReverbButton_Callback(hObject, eventdata, handles)
-% hObject    handle to ATReverbButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-originalFile = getFile();
-
-if(~isempty(originalFile))
-    ATReverbatorGUI(originalFile);
-else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
-end
-
-
-
-% --- Executes on button press in ATChorusButton.
-function ATChorusButton_Callback(hObject, eventdata, handles)
-% hObject    handle to ATChorusButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-originalFile = getFile();
-if(~isempty(originalFile))
-    audioTestBench(handles.chorus_AT);
-else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
-end
-
-
-
-% --- Executes on button press in ATPitchShifterButton.
-function ATPitchShifterButton_Callback(hObject, eventdata, handles)
-% hObject    handle to ATPitchShifterButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-originalFile = getFile();
-
-if(~isempty(originalFile))
-    audioTestBench(handles.pitchShifter_AT);
-else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
-end
-
-% --- Executes on button press in ATFlangerButton.
-function ATFlangerButton_Callback(hObject, eventdata, handles)
-% hObject    handle to ATFlangerButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-originalFile = getFile();
-
-if(~isempty(originalFile))
-    audioTestBench(handles.flanger_AT);
-else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
-end
-
-% --- Executes on button press in ATApplyButton.
-function ATApplyButton_Callback(hObject, eventdata, handles)
-% hObject    handle to ATApplyButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-ATProcessedFile = uiimport('-file');
-
-if(~isempty(ATProcessedFile))
-    setATProcessedFile(ATProcessedFile);
- 
-    axes(handles.Waveform);
-    plot((0:length(ATProcessedFile.data(:,1))-1)/ATProcessedFile.fs,...
-        ATProcessedFile.data(:,1)); 
-    grid;
-    xlabel('Czas trwania[s]');
-    ylabel('Amplituda[dB]');
-    
-    axes(handles.Spectrum);
-    spectrogram(ATProcessedFile.data(:,1));
-    xlabel('Czêstotliwoœæ unormowana [x pi rad/n]');
-    ylabel('Próbki n');
-else
-    msgbox('Nie wybrano ¿adnego pliku!', 'B³¹d');
+    showError('Nie wybrano ¿adnego pliku!');
 end

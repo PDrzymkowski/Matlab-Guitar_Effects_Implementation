@@ -16,25 +16,28 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function output = tremolo(input, Fs, rate, depth, shape)
 
+%Obliczenie czêstotliwoœci unormowanej sygna³u moduluj¹cego
 frequency_mod = rate / Fs;
 
 output = zeros(length(input),1);
 
+% Sygna³ moduluj¹cy - trójk¹t
 if shape == "TRI"
-for i = 1:length(input)
-    output(i) = (1/(1+depth))* input(i)*(1+depth*(sawtooth(2*pi*frequency_mod*i)));
-end
+    for i = 1:length(input)
+        output(i) = (1/(1+depth))* input(i)*(1+depth*(sawtooth(2*pi*frequency_mod*i)));
+    end
 
+% Sygna³ moduluj¹cy - prostok¹t
 elseif shape == "SQU"
-for i = 1:length(input)
-    output(i) = (1/(1+depth))* input(i)*(1+depth*(square(2*pi*frequency_mod*i)));
-end
-
+    for i = 1:length(input)
+        output(i) = (1/(1+depth))* input(i)*(1+depth*(square(2*pi*frequency_mod*i)));
+    end
+    
+% Sygna³ moduluj¹cy - cosinus
 else
-for i = 1:length(input)
-    output(i) = (1/(1+depth))* input(i)*(1+depth*(cos(2*pi*frequency_mod*i)));
-end
-
+    for i = 1:length(input)
+        output(i) = (1/(1+depth))* input(i)*(1+depth*(cos(2*pi*frequency_mod*i)));
+    end
 end
 
 

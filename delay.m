@@ -17,6 +17,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function output = delay(input, Fs, delay, gain, version)
 
+% Obliczenie liczby probek opoznienia sygnalu audio
 delayTime = floor(delay*Fs/1000);
 output = zeros(length(input), 1);
 
@@ -26,10 +27,12 @@ end
 
 if(strcmp(version, 'FIR'))
     for i = delayTime+1:length(input)
+        % Dodanie opoznionej probki do obecnej w wersji SOI efektu
         output(i) = (1/(1+gain))*(input(i) + gain*input(i-delayTime));
     end
 else
-    for i = delayTIme+1:length(signal)
+    for i = delayTime+1:length(signal)
+        % Dodanie opoznionej probki do obecnej w wersji NOI efektu
         output(i) = (1/(1+gain))*(input(i) + gain*output(i-delayTime));
     end
 end
