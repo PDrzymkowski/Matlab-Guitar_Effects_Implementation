@@ -22,7 +22,7 @@ function varargout = reverbGUI(varargin)
 
 % Edit the above text to modify the response to help reverbGUI
 
-% Last Modified by GUIDE v2.5 25-Mar-2019 17:13:53
+% Last Modified by GUIDE v2.5 13-Jun-2020 11:42:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -62,8 +62,10 @@ guidata(hObject, handles);
 % uiwait(handles.figure1);
 set(handles.reverb_roomSizeSlider, 'Value', evalin('base', 'reverb_roomSize'));
 set(handles.reverb_roomSizeEdit, 'String', num2str(evalin('base', 'reverb_roomSize')));
-set(handles.reverb_depthSlider, 'Value', evalin('base', 'reverb_depth'));
-set(handles.reverb_depthEdit, 'String', num2str(evalin('base', 'reverb_depth')));
+set(handles.reverb_depth1Slider, 'Value', evalin('base', 'reverb_depth1'));
+set(handles.reverb_depth1Edit, 'String', num2str(evalin('base', 'reverb_depth1')));
+set(handles.reverb_depth2Slider, 'Value', evalin('base', 'reverb_depth2'));
+set(handles.reverb_depth2Edit, 'String', num2str(evalin('base', 'reverb_depth2')));
 set(handles.reverb_preDelay1Slider, 'Value', evalin('base', 'reverb_preDelay1'));
 set(handles.reverb_preDelay1Edit, 'String', num2str(evalin('base', 'reverb_preDelay1')));
 set(handles.reverb_preDelay2Slider, 'Value', evalin('base', 'reverb_preDelay2'));
@@ -156,22 +158,23 @@ function reverb_checkbox_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of reverb_checkbox
 assignin('base', 'reverb_ON', get(hObject, 'Value'));
 
+
 % --- Executes on slider movement.
-function reverb_depthSlider_Callback(hObject, eventdata, handles)
-% hObject    handle to reverb_depthSlider (see GCBO)
+function reverb_depth1Slider_Callback(hObject, eventdata, handles)
+% hObject    handle to reverb_depth1Slider (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-set(handles.reverb_depthEdit, 'String', get(hObject,'Value'));
-assignin('base', 'reverb_depth', get(hObject,'Value'));
+set(handles.reverb_depth1Edit, 'String', get(hObject,'Value'));
+assignin('base', 'reverb_depth1', get(hObject,'Value'));
 guidata(hObject,handles)
 
 
 % --- Executes during object creation, after setting all properties.
-function reverb_depthSlider_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to reverb_depthSlider (see GCBO)
+function reverb_depth1Slider_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to reverb_depth1Slider (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -181,35 +184,97 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
 end
 
 
-
-function reverb_depthEdit_Callback(hObject, eventdata, handles)
-% hObject    handle to reverb_depthEdit (see GCBO)
+function reverb_depth1Edit_Callback(hObject, eventdata, handles)
+% hObject    handle to reverb_depth1Edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of reverb_depthEdit as text
-%        str2double(get(hObject,'String')) returns contents of reverb_depthEdit as a double
+% Hints: get(hObject,'String') returns contents of reverb_depth1Edit as text
+%        str2double(get(hObject,'String')) returns contents of reverb_depth1Edit as a double
 val = str2double(get(hObject,'String'));
 
-if(val < get(handles.reverb_depthSlider, 'Min'))
-    val = get(handles.reverb_depthSlider, 'Min');
-    set(handles.reverb_depthSlider, 'Value', val);
+if(val < get(handles.reverb_depth1Slider, 'Min'))
+    val = get(handles.reverb_depth1Slider, 'Min');
+    set(handles.reverb_depth1Slider, 'Value', val);
     set(hObject, 'String', val); 
-elseif(val > get(handles.reverb_depthSlider, 'Max'))
-    val = get(handles.reverb_depthSlider, 'Max');
-    set(handles.reverb_depthSlider, 'Value', val);
+elseif(val > get(handles.reverb_depth1Slider, 'Max'))
+    val = get(handles.reverb_depth1Slider, 'Max');
+    set(handles.reverb_depth1Slider, 'Value', val);
     set(hObject, 'String', val); 
 else
-    set(handles.reverb_depthSlider,'Value', val);
+    set(handles.reverb_depth1Slider,'Value', val);
 end
 
 guidata(hObject,handles)
-assignin('base', 'reverb_depth', get(handles.reverb_depthSlider, 'Value'));
+assignin('base', 'reverb_depth1', get(handles.reverb_depth1Slider, 'Value'));
 
 
 % --- Executes during object creation, after setting all properties.
-function reverb_depthEdit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to reverb_depthEdit (see GCBO)
+function reverb_depth1Edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to reverb_depth1Edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on slider movement.
+function reverb_depth2Slider_Callback(hObject, eventdata, handles)
+% hObject    handle to reverb_depth2Slider (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+set(handles.reverb_depth2Edit, 'String', get(hObject,'Value'));
+assignin('base', 'reverb_depth2', get(hObject,'Value'));
+guidata(hObject,handles)
+
+
+% --- Executes during object creation, after setting all properties.
+function reverb_depth2Slider_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to reverb_depth2Slider (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+function reverb_depth2Edit_Callback(hObject, eventdata, handles)
+% hObject    handle to reverb_depth2Edit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of reverb_depth2Edit as text
+%        str2double(get(hObject,'String')) returns contents of reverb_depth2Edit as a double
+val = str2double(get(hObject,'String'));
+
+if(val < get(handles.reverb_depth2Slider, 'Min'))
+    val = get(handles.reverb_depth2Slider, 'Min');
+    set(handles.reverb_depth2Slider, 'Value', val);
+    set(hObject, 'String', val); 
+elseif(val > get(handles.reverb_depth2Slider, 'Max'))
+    val = get(handles.reverb_depth2Slider, 'Max');
+    set(handles.reverb_depth2Slider, 'Value', val);
+    set(hObject, 'String', val); 
+else
+    set(handles.reverb_depth2Slider,'Value', val);
+end
+
+guidata(hObject,handles)
+assignin('base', 'reverb_depth2', get(handles.reverb_depth2Slider, 'Value'));
+
+
+% --- Executes during object creation, after setting all properties.
+function reverb_depth2Edit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to reverb_depth2Edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 

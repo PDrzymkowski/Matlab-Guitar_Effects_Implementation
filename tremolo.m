@@ -14,30 +14,25 @@
 %   Przyk³adowe wywo³anie
 %       output = tremolo(sygnal_audio, 44100, 2, 0.5, "SQU");
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function output = tremolo(input, Fs, rate, depth, shape)
+function output = tremolo(input, fs, rate, depth, shape)
 
 %Obliczenie czêstotliwoœci unormowanej sygna³u moduluj¹cego
-frequency_mod = rate / Fs;
+frequency_mod = rate / fs;
 
-output = zeros(length(input),1);
+output = input(:,1);
+n = 1:length(input);
 
 % Sygna³ moduluj¹cy - trójk¹t
 if shape == "TRI"
-    for i = 1:length(input)
-        output(i) = (1/(1+depth))* input(i)*(1+depth*(sawtooth(2*pi*frequency_mod*i)));
-    end
+    output(n) = (1/(1+depth))*input(n, 1)'.*(1+depth*(sawtooth(2*pi*frequency_mod*n)));
 
 % Sygna³ moduluj¹cy - prostok¹t
 elseif shape == "SQU"
-    for i = 1:length(input)
-        output(i) = (1/(1+depth))* input(i)*(1+depth*(square(2*pi*frequency_mod*i)));
-    end
+    output(n) = (1/(1+depth))*input(n, 1)'.*(1+depth*(square(2*pi*frequency_mod*n)));
     
-% Sygna³ moduluj¹cy - cosinus
+% Sygna³ moduluj¹cy - sinus
 else
-    for i = 1:length(input)
-        output(i) = (1/(1+depth))* input(i)*(1+depth*(cos(2*pi*frequency_mod*i)));
-    end
+    output(n) = (1/(1+depth))*input(n, 1)'.*(1+depth*(sin(2*pi*frequency_mod*n)));
 end
 
 

@@ -5,7 +5,7 @@
 %   Parametry:
 %       input- sygna³ wejœciowy (podany w próbkach)
 %       Fs- czêstotliwoœæ próbkowania sygna³u oryginalnego 
-%       delay- opóŸnienie sygna³u w ms
+%       delay_value- opóŸnienie sygna³u w ms
 %       gain- przyrost sygna³u opóŸnionego wzglêdem orygina³u
 %       version - okreœla wersjê FIR lub IIR u¿ywanego efektu
 %   Opis dzia³ania:
@@ -15,24 +15,21 @@
 %   Przyk³adowe wywo³anie
 %       output = delay(sygnal_audio, 44100, 200, 0.5, 'FIR');
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function output = delay(input, Fs, delay, gain, version)
+function output = delay(input, fs, delay_value, gain, version)
 
 % Obliczenie liczby probek opoznienia sygnalu audio
-delayTime = floor(delay*Fs/1000);
-output = zeros(length(input), 1);
+delay_time = floor(delay_value*fs/1000);
 
-for i = 1:delayTime
-    output(i) = input(i);
-end
-
+output = input(:,1);
+n = delay_time+1:length(input);
+ 
 if(strcmp(version, 'FIR'))
-    for i = delayTime+1:length(input)
-        % Dodanie opoznionej probki do obecnej w wersji SOI efektu
-        output(i) = (1/(1+gain))*(input(i) + gain*input(i-delayTime));
-    end
+    % Dodanie opoznionej probki do bie¿¹cej w wersji SOI efektu
+    output(n) = (1/(1+gain))*(input(n, 1) + gain*input(n-delay_time, 1));              
 else
-    for i = delayTime+1:length(signal)
-        % Dodanie opoznionej probki do obecnej w wersji NOI efektu
-        output(i) = (1/(1+gain))*(input(i) + gain*output(i-delayTime));
-    end
+    % Dodanie opoznionej probki do bie¿¹cej w wersji NOI efektu
+    for n = delay_time+1:length(input)
+        output(n) = (1/(1+gain))*(input(n, 1) + gain*output(n-delay_time));
+    end                       
 end
+
